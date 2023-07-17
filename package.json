@@ -1,0 +1,26 @@
+{
+  "name": "mock-wle-server",
+  "version": "1.0.0",
+  "description": "Display a single-page html form to a local users default browser.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "devStart": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "winlink",
+    "form"
+  ],
+  "author": "Jon Rumsey",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

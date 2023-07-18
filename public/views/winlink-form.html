@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="" viewport" content="width=device-width, initial-scale=1" />
-  <title>Moch Winlink Form</title>
+  <title>Mock Winlink Form</title>
   <script language="javascript" type="text/javascript">
 
   </script>
@@ -12,8 +12,8 @@
 
 <body>
   <section>
-    <form onsubmit="return confirm('To complete form submission click OK and close the browser window.')" ; method=""
-      post" id="" myform" enctype="multipart/form-data" action="http://localhost:3001">
+    <form onsubmit="return confirm('To complete form submission click OK and close the browser window.')" ;
+      method="post" id="myform" enctype="multipart/form-data" action="http://localhost:3001">
       <label for="eventTitle">Event Title</label>
       <input name="eventTitle" type="text" id="eventTitle" size="50" maxlength="50" required />
       <br />
@@ -22,6 +22,7 @@
       <label for="address">Address</label>
       <input name="address" type="text" id="address" size="50" maxlength="50"
         title="separate multiple addresses with semicolon;" required />
+      <button type="submit" value="Submit">Submit</button>
     </form>
   </section>
 </body>

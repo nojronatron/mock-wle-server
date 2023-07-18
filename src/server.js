@@ -3,10 +3,15 @@ const app = express();
 const port = 3001;
 const path = require('path');
 const multiparty = require('multiparty');
+//const winlinkForm = 'winlink-form.html';
+const winlinkForm = 'Bigfoot-Bib-Report-Initial.html';
+const util = require('util');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res, next) => {
   console.log('received GET request');
-  //  const alpha = 'public\views\winlink-form.html';
 
   const options = {
     root: path.join(__dirname, '../public/views'),
@@ -17,20 +22,21 @@ app.get('/', (req, res, next) => {
     },
   };
 
-  const filename = 'winlink-form.html';
-  res.sendFile(filename, options, function (err) {
+  res.sendFile(winlinkForm, options, function (err) {
     if (err) {
       next(err);
     } else {
-      console.log('sent:', filename);
+      console.log('sent:', winlinkForm);
     }
   });
 });
 
 app.post('/', (req, res) => {
-  console.log('received request on post / route.');
+  console.log('received request on post route.');
+  // console.log('req.body:', req.body);
+
   // parse uploaded multi-part form data
-  const form = new multiparty.Form();
+  let form = new multiparty.Form();
 
   form.on('error', function (err) {
     console.log('Error parsing form: ', err.stack);
@@ -39,13 +45,15 @@ app.post('/', (req, res) => {
   form.on('part', function (part) {
     // undefined filename means this is just a field
     if (part.filename === undefined) {
-      console.log('got part', part, 'name', part.name);
+      console.log('got part.name:', part.name);
+      console.log('part.byteCount:', part.byteCount);
       part.resume();
     }
 
     // filename means this is a file
     if (part.filename !== undefined) {
-      console.log('got file named', part.name);
+      console.log('got part.filename:', part.filename);
+      console.log('part.byteCount:', part.byteCount);
       part.resume();
     }
 
@@ -54,8 +62,6 @@ app.post('/', (req, res) => {
     });
   });
 
-  // console.log(req.body);
-  // res.send('POST request received');
   // close emitted items after form is parsed
   form.on('close', function () {
     console.log('form parsing completed!');
@@ -64,7 +70,11 @@ app.post('/', (req, res) => {
   });
 
   // use multiparty form parse() function to parse the request
-  form.parse(req);
+  form.parse(req, function (err, fields, files) {
+    console.log('form.parse() returned:');
+    console.log('fields:', util.inspect(fields));
+    console.log('files:', util.inspect(files));
+  });
 });
 
 app.use((err, req, res, next) => {

@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+// todo: replace port with an environment variable
 const port = 3001;
 
 const multiparty = require('multiparty');

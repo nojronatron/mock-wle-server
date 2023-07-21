@@ -1,39 +1,21 @@
 const express = require('express');
 const app = express();
 const port = 3001;
-const path = require('path');
+
 const multiparty = require('multiparty');
-//const winlinkForm = 'winlink-form.html';
-const winlinkForm = 'Bigfoot-Bib-Report-Initial.html';
+const rewriteFormAction = require('./rewrite-form-action');
 const util = require('util');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req, res, next) => {
+app.get('/', async (req, res, next) => {
   console.log('received GET request');
-
-  const options = {
-    root: path.join(__dirname, '../public/views'),
-    dotfiles: 'deny',
-    headers: {
-      'x-timestamp': Date.now(),
-      'x-sent': true,
-    },
-  };
-
-  res.sendFile(winlinkForm, options, function (err) {
-    if (err) {
-      next(err);
-    } else {
-      console.log('sent:', winlinkForm);
-    }
-  });
+  await rewriteFormAction(req, res, next);
 });
 
-app.post('/', (req, res) => {
+app.post('/', (req, res, next) => {
   console.log('received request on post route.');
-  // console.log('req.body:', req.body);
 
   // parse uploaded multi-part form data
   let form = new multiparty.Form();

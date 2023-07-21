@@ -1,1 +1,3 @@
 node_modules
+public/views
+!public/views/put-html-files-here.md

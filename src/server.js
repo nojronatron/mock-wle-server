@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
-// todo: replace port with an environment variable
-const port = 3001;
-
 const multiparty = require('multiparty');
 const rewriteFormAction = require('./rewrite-form-action');
 const util = require('util');
+
+require('dotenv').config();
+const PORT = process.env.API_PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -69,6 +69,6 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(port, () => {
-  console.log('Server listening on port ', port);
+app.listen(PORT, () => {
+  console.log('Server listening on port ', PORT);
 });

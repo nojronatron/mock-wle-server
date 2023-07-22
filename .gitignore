@@ -1,3 +1,4 @@
 node_modules
 !public/views/put-html-files-here.md
 public/views/*.html
+.env

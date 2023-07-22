@@ -1,15 +1,22 @@
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 // find the html file, open it, then find and replace the form action attribute with a custom one
 async function rewriteFormAction(req, res, next) {
-  // todo: replace winlinkForm with an environment variable
-  const winlinkForm = 'Bigfoot-Bib-Report-Initial.html';
-  // todo: replace actualFormServer with an environment variable
-  const actualFormServer = 'localhost:3001';
-  const textToReplace = '{FormServer}:{FormPort}';
   const basePath = '../public/views';
+  const winlinkForm = process.env.WINLINK_FORM_NAME;
+  const textToReplace =
+    process.env.TEXT_TO_REPLACE || '{FormServer}:{FormPort}';
+  const actualFormServer = process.env.FORM_SERVER_ADDRESS || 'localhost';
+  const actualFormPort = process.env.FORM_SERVER_PORT || process.env.PORT;
+  const actualFormServerAndPort = `${actualFormServer}:${actualFormPort}`;
+
   // find filename
+  if (winlinkForm === undefined) {
+    next(new Error('No form name specified.'));
+  }
+
   const filePath = path.join(__dirname, basePath, winlinkForm);
 
   // open file and read its contents
@@ -19,7 +26,7 @@ async function rewriteFormAction(req, res, next) {
       next(err);
     } else {
       // replace search string with replacement string
-      const result = data.replace(textToReplace, actualFormServer);
+      const result = data.replace(textToReplace, actualFormServerAndPort);
       res.send(result);
     }
   });

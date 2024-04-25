@@ -6,11 +6,10 @@ require('dotenv').config();
 async function rewriteFormAction(req, res, next) {
   const basePath = '../public/views';
   const winlinkForm = process.env.WINLINK_FORM_NAME;
-  const textToReplace =
-    process.env.TEXT_TO_REPLACE || '{FormServer}:{FormPort}';
-  const actualFormServer = process.env.FORM_SERVER_ADDRESS || 'localhost';
-  const actualFormPort = process.env.FORM_SERVER_PORT || process.env.PORT;
-  const actualFormServerAndPort = `${actualFormServer}:${actualFormPort}`;
+  const textToReplace = process.env.TEXT_TO_REPLACE || '{FormServer}:{FormPort}';
+  const actualFormServer = 'localhost';
+  const actualFormPort = process.env.FORM_SERVER_PORT || 3000;
+  const formServerAndPort = `${actualFormServer}:${actualFormPort}`;
 
   // find filename
   if (winlinkForm === undefined) {
@@ -26,7 +25,7 @@ async function rewriteFormAction(req, res, next) {
       next(err);
     } else {
       // replace search string with replacement string
-      const result = data.replace(textToReplace, actualFormServerAndPort);
+      const result = data.replace(textToReplace, formServerAndPort);
       res.send(result);
     }
   });

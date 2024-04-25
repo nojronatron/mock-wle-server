@@ -5,18 +5,18 @@ const rewriteFormAction = require('./rewrite-form-action');
 const util = require('util');
 
 require('dotenv').config();
-const PORT = process.env.API_PORT || 3000;
+const PORT = process.env.FORM_SERVER_PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/', async (req, res, next) => {
-  console.log('received GET request');
+  console.log('\nreceived GET request\n');
   await rewriteFormAction(req, res, next);
 });
 
 app.post('/', (req, res, next) => {
-  console.log('received request on post route.');
+  console.log('\n***** received a form *****\n');
 
   // parse uploaded multi-part form data
   let form = new multiparty.Form();
@@ -54,9 +54,10 @@ app.post('/', (req, res, next) => {
 
   // use multiparty form parse() function to parse the request
   form.parse(req, function (err, fields, files) {
-    console.log('form.parse() returned:');
+    console.log('vvv parsed form data vvv');
     console.log('fields:', util.inspect(fields));
     console.log('files:', util.inspect(files));
+    console.log('\n***** end of form *****\n\n');
   });
 });
 

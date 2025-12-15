@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "devStart": "nodemon src/server.js",
+    "devStart": "nodemon --delay 1100ms src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -17,13 +17,13 @@
   "author": "Jon Rumsey",
   "license": "MIT",
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.51.2",
     "express": "^5.2.1",
     "multiparty": "^4.2.3",
     "path": "^0.12.7",
     "util": "^0.12.5"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.11"
   }
 }

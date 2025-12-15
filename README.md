@@ -21,8 +21,8 @@ This is a placeholder, more information will be added in the near future.
 1. Copy your Winlink Template and Form file(s) to the `public/views` directory.
 2. Copy `.env.example` contents to a new file named `.env` and update the form name and server port (if default already in use).
 3. Execute `npm run devStart` to start the server.
-4. Update `.env` FORM_SERVER_HOSTNAME to the 'forwarded address' listed in the PORTS tab of the panel.
-  - If running in VSCode, a prompt might request opening a browser. Instead, paste the forwarded address into a new browser/tab.
+4. Update `.env` FORM_SERVER_HOSTNAME with the server hostname (do not include http/s protocol prefix nor any trailing slash `/`).
+  - If running in VSCode, a prompt might request opening a browser. Instead, paste the forwarded address (from the PORTS panel) into a new browser/tab.
   - Otherwise, maually open a browser and point to `https://{FORM_SERVER_HOSTNAME}:{API_PORT}` to launch the configured form (where FORM_SERVER_HOSTNAME and API_PORT are values you configured in the `.env` file).
 5. Fill out the loaded Form and click the Submit button.
 6. Review the Terminal output to see the JSON representation of the data the Form is configured to send.

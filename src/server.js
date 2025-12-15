@@ -11,8 +11,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/', async (req, res, next) => {
-  console.log('\nreceived GET request\n');
-  await rewriteFormAction(req, res, next);
+  try{
+    console.log('\nreceived GET request\n');
+    await rewriteFormAction(req, res, next);
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.post('/', (req, res, next) => {

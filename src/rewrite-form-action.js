@@ -7,9 +7,21 @@ async function rewriteFormAction(req, res, next) {
   const basePath = '../public/views';
   const winlinkForm = process.env.WINLINK_FORM_NAME;
   const textToReplace = process.env.TEXT_TO_REPLACE || '{FormServer}:{FormPort}';
-  const actualFormServer = 'localhost';
+  const actualFormServer = process.env.FORM_SERVER_HOSTNAME || 'localhost';
   const actualFormPort = process.env.FORM_SERVER_PORT || 3000;
-  const formServerAndPort = `${actualFormServer}:${actualFormPort}`;
+  
+  // Construct form server URL based on hostname format:
+  // - https:// prefix -> use as-is (no port)
+  // - http:// prefix -> use with port appended
+  // - no prefix -> default to https with hostname and port
+  let formServerAndPort;
+  if (actualFormServer.startsWith('https')) {
+    formServerAndPort = actualFormServer;
+  } else if (actualFormServer.startsWith('http')) {
+    formServerAndPort = `${actualFormServer}:${actualFormPort}`;
+  } else {
+    formServerAndPort = `https://${actualFormServer}:${actualFormPort}`;
+  }
 
   // find filename
   if (winlinkForm === undefined) {

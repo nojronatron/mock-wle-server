@@ -3,9 +3,13 @@ const app = express();
 const multiparty = require('multiparty');
 const rewriteFormAction = require('./rewrite-form-action');
 const util = require('util');
+const fs = require('fs');
+const https = require('https');
+const path = require('path');
 
 require('dotenv').config();
 const PORT = process.env.FORM_SERVER_PORT || 3000;
+const PROTOCOL = (process.env.FORM_SERVER_PROTOCOL || 'http').toLowerCase();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -74,6 +78,24 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log('Server listening on port ', PORT);
-});
+if (PROTOCOL === 'https') {
+  const keyPath = process.env.SSL_KEY_PATH || path.join(__dirname, '..', 'server.key');
+  const certPath = process.env.SSL_CERT_PATH || path.join(__dirname, '..', 'server.crt');
+  try {
+    const key = fs.readFileSync(keyPath);
+    const cert = fs.readFileSync(certPath);
+    https.createServer({ key, cert }, app).listen(PORT, () => {
+      console.log('HTTPS Server listening on port', PORT);
+    });
+  } catch (err) {
+    console.error('Failed to start HTTPS server (missing/invalid certs):', err.message);
+    console.log('Falling back to HTTP on port', PORT);
+    app.listen(PORT, () => {
+      console.log('Server listening on port', PORT);
+    });
+  }
+} else {
+  app.listen(PORT, () => {
+    console.log('Server listening on port', PORT);
+  });
+}

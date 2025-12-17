@@ -2,10 +2,8 @@ const express = require('express');
 const app = express();
 const multiparty = require('multiparty');
 const rewriteFormAction = require('./rewrite-form-action');
-const util = require('util');
 const fs = require('fs');
 const https = require('https');
-const path = require('path');
 
 require('dotenv').config();
 const PORT = process.env.FORM_SERVER_PORT || 3000;
@@ -63,8 +61,8 @@ app.post('/', (req, res, next) => {
   // use multiparty form parse() function to parse the request
   form.parse(req, function (err, fields, files) {
     console.log('vvv parsed form data vvv');
-    console.log('fields:', util.inspect(fields));
-    console.log('files:', util.inspect(files));
+    console.log('fields:', JSON.stringify(fields, null, 2));
+    console.log('files:', JSON.stringify(files, null, 2));
     console.log('\n***** end of form *****\n\n');
   });
 });
@@ -79,8 +77,8 @@ app.use((err, req, res, next) => {
 });
 
 if (PROTOCOL === 'https') {
-  const keyPath = process.env.SSL_KEY_PATH || path.join(__dirname, '..', 'server.key');
-  const certPath = process.env.SSL_CERT_PATH || path.join(__dirname, '..', 'server.crt');
+  const keyPath = process.env.SSL_KEY_PATH || (__dirname + '/../server.key');
+  const certPath = process.env.SSL_CERT_PATH || (__dirname + '/../server.crt');
   try {
     const key = fs.readFileSync(keyPath);
     const cert = fs.readFileSync(certPath);

@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 require('dotenv').config();
 const { URL } = require('url');
 
@@ -55,7 +54,7 @@ async function rewriteFormAction(req, res, next) {
     return next(new Error('No form name specified.'));
   }
 
-  const filePath = path.join(__dirname, basePath, winlinkForm);
+  const filePath = __dirname + '/' + basePath + '/' + winlinkForm;
 
   // open file and read its contents
   fs.readFile(filePath, 'utf8', (err, data) => {

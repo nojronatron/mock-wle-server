@@ -18,31 +18,33 @@ This is a placeholder, more information will be added in the near future.
 
 ## Configuration & Use
 
-1. Copy your Winlink Template and Form file(s) to the `public/views` directory.
-2. Copy `.env.example` contents to a new file named `.env` and update the form name, the current server name (or localhost), and assign an available port you want the server to run on.
-  - If running in CodeSpaces: See additional information below.
-3. If you want the server to serve HTTPS, set `FORM_SERVER_PROTOCOL="https"` in your `.env` and provide paths to your key and cert using `SSL_KEY_PATH` and `SSL_CERT_PATH` (or place `server.key` and `server.crt` in the project root). See the "Generate SSL key/cert" section below for a quick way to create test certificates.
-4. Update `.env` FORM_SERVER_HOSTNAME with the server hostname without trailing slash:
-  - Local development: Use localhost and a valid, available port.
-  - Local unsecured dev: Prefix server identification with 'http:' and an available port number.
-5. Execute `npm run devStart` to start the server.
+1. Copy your Winlink Form file to the `public/views` directory.
+2. Copy `.env.example` contents to a new file named `.env`
+3. Update `WINLINK_FORM_NAME` with the file name of the Winlink Form.
+4. If you want the server to serve HTTPS (not usually necessary):
+  1. Set `FORM_SERVER_PROTOCOL="https"` in your `.env`
+  2. Provide paths to your key and cert using `SSL_KEY_PATH` and `SSL_CERT_PATH` (or place `server.key` and `server.crt` in the project root).
+    - See "Generate SSL key/cert" section below for instructions how to create these for testing.
+5. Update `FORM_SERVER_HOSTNAME` with the server hostname without trailing slash:
+  - Use localhost for most scenarios including CodeSpaces.
+  - Using a fully qualified hostname or IP address is acceptable.
+  - Local development: Use 'localhost' and update `FORM_SERVER_PORT` with a valid, available port.
+6. Execute `npm run devStart` to start the server.
 6. Load the form in the browser and fill it out. Click the Submit button when done.
 7. Review the Server's Terminal output to see the JSON representation of the data the Form is configured to send.
 
 ### Codespaces
 
-Codespaces uses port forwarding to allow external requests to reach the server, so you will need to discover the full servername URI before adding FORM_SERVER_HOSTNAME to `.env`.
+The rewrite form action code will check for headers, telling it to configure a Code Spaces PORT url.
 
-1. Start the server: `npm run devStart`.
-2. Look in the PORTS panel and copy the forwarded address (the entire URI).
-3. Paste the entire URI to the `.env` as the FORM_SERVER_HOSTNAME except for the last `/` character.
-4. Complete the rest of the configuration steps as listed above.
+- Leave `FORM_SERVER_HOSTNAME` as 'localhost'
+- Leave `FORM_SERVER_PORT` unchanged / 3001.
 
-_Note_: Use the same URI in the web browser to load the form.
+When you run the project, console log output should show you the correct rewritten form action that should _not_ include `:3001` (port).
 
 ## Generate SSL key/cert (quick local test)
 
-For local HTTPS testing you can create a self-signed key and certificate with OpenSSL (replace CN if needed):
+In the unlikely event you need to test using HTTPS, you can create a self-signed key and certificate with OpenSSL (replace CN if needed):
 
 ```bash
 openssl req -x509 -newkey rsa:2048 -nodes -keyout server.key -out server.crt -days 365 -subj "/CN=localhost"

@@ -14,29 +14,40 @@ async function rewriteFormAction(req, res, next) {
   const textToReplace = stripQuotes(process.env.TEXT_TO_REPLACE) || 'http://{FormServer}:{FormPort}';
   const actualFormServer = stripQuotes(process.env.FORM_SERVER_HOSTNAME) || 'localhost';
   const actualFormPort = stripQuotes(process.env.FORM_SERVER_PORT) || 3000;
-  
-  // Build a canonical form action URL.
-  // Use FORM_SERVER_PROTOCOL env var (http or https) when the host has no protocol.
-  const protocolPref = stripQuotes(process.env.FORM_SERVER_PROTOCOL) || 'http';
-  let hostWithProto = String(actualFormServer);
-  if (!/^https?:\/\//i.test(hostWithProto)) {
-    hostWithProto = `${protocolPref}://${hostWithProto}`;
-  }
 
-  // Parse and ensure a port is present
+  // Detect Codespaces or other forwarded environment
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const forwardedHost = req.headers['x-forwarded-host'] || req.headers['host'];
+
   let formServerAndPort;
-  try {
-    const urlObj = new URL(hostWithProto);
-    if (!urlObj.port) {
-      urlObj.port = String(actualFormPort);
+
+  // If forwarded headers are present, use them to build the form action URL
+  if (forwardedProto && forwardedHost) {
+    formServerAndPort = `${forwardedProto}://${forwardedHost}`;
+    console.log('Detected forwarded request, using:', formServerAndPort);
+  } else {
+    // build a canonical form action URL from env vars
+    const protocolPref = stripQuotes(process.env.FORM_SERVER_PROTOCOL) || 'http';
+    let hostWithProto = String(actualFormServer);
+
+    if (!/^https?:\/\//i.test(hostWithProto)) {
+      hostWithProto = `${protocolPref}://${hostWithProto}`;
     }
-    formServerAndPort = urlObj.toString().replace(/\/$/, '');
-  } catch (err) {
-    // Fallback: build manually
-    const protoMatch = hostWithProto.match(/^([^:\/]+):\/\//);
-    const proto = protoMatch ? protoMatch[1] : protocolPref;
-    const hostname = hostWithProto.replace(/^https?:\/\//i, '');
-    formServerAndPort = `${proto}://${hostname}:${actualFormPort}`;
+
+    // Parse and ensure a port is present
+    try {
+      const urlObj = new URL(hostWithProto);
+      if (!urlObj.port) {
+        urlObj.port = String(actualFormPort);
+      }
+      formServerAndPort = urlObj.toString().replace(/\/$/, '');
+    } catch (err) {
+      // Fallback: build manually
+      const protoMatch = hostWithProto.match(/^([^:\/]+):\/\//);
+      const proto = protoMatch ? protoMatch[1] : protocolPref;
+      const hostname = hostWithProto.replace(/^https?:\/\//i, '');
+      formServerAndPort = `${proto}://${hostname}:${actualFormPort}`;
+    }
   }
 
   // find filename
